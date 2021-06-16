@@ -27,21 +27,28 @@ if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
 
 deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Deploying app")
-  rsconnect::setAccountInfo(name = account,
-                            token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-                            secret = Sys.getenv("SHINYAPPS_IO_SECRET"))
+  rsconnect::setAccountInfo(
+    name = account,
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
 
-  branch_name = stringr::str_match(Sys.getenv('GITHUB_REF'), "^refs/heads/(.*)$")[1, 2]
+  branch_name = stringr::str_match(Sys.getenv("GITHUB_REF"), "^refs/heads/(.*)$")[1, 2]
   repo_name = stringr::str_match(Sys.getenv("GITHUB_REPOSITORY"), ".*/(.*)$")[1, 2]
-  appName = if (branch_name %in% c("master", "main")) repo_name
-  else paste(repo_name, branch_name, sep = "-")
+  app_name = if (branch_name %in% c("master", "main")) {
+    repo_name
+  } else {
+    paste(repo_name, branch_name, sep = "-")
+  }
 
-  cli::cli_alert_info("appName: ", appName)
+  cli::cli_alert_info("appName: ", app_name)
   rsconnect::deployApp(
-    account = account, server = server,
+    account = account,
+    server = server,
     appDir = ".",
-    appName = appName)
-  cli::cli_alert_success("{appName} successfully deployed")
+    appName = app_name
+  )
+  cli::cli_alert_success("{app_name} successfully deployed")
 }
 
 # Clean up after merging.
@@ -61,4 +68,4 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
 
 # install_pkg()
 deploy(account = "jumpingrivers")
-#terminate(account = "nationalarchives")
+# terminate(account = "nationalarchives")
