@@ -71,6 +71,11 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
 # Clean up (eg, after merging / closing a branch).
 terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Terminating app")
+  rsconnect::setAccountInfo(
+    name = account,
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
 
   app_name = get_app_name()
 
