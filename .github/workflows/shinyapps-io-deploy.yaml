@@ -18,6 +18,7 @@ jobs:
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
       SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
       COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      SCRIPT: ".github/scripts/deploy-shinyapps-io.R"
 
     steps:
       - name: Checkout Project
@@ -28,7 +29,7 @@ jobs:
 
       - name: Install R dependecies
         run: |
-          source("deploy-shinyapps-io.R")
+          source("${{ env.SCRIPT }}")
           install_deps()
         shell: Rscript {0}
 
@@ -38,6 +39,6 @@ jobs:
 
       - name: Deploy the app for this branch
         run: |
-          source("deploy-shinyapps-io.R")
+          source("${{ env.SCRIPT }}")
           deploy(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}

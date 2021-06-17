@@ -15,6 +15,7 @@ jobs:
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
       SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
       COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      SCRIPT: ".github/scripts/deploy-shinyapps-io.R"
 
     steps:
       - name: Checkout Project
@@ -25,12 +26,12 @@ jobs:
 
       - name: Install R dependecies
         run: |
-          source("deploy-shinyapps-io.R")
+          source("${{ env.SCRIPT }}")
           install_deps()
         shell: Rscript {0}
 
       - name: Teardown the app for this closed branch
         run: |
-          source("deploy-shinyapps-io.R")
+          source("${{ env.SCRIPT }}")
           terminate(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}
