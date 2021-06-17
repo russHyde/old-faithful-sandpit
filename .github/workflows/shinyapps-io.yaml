@@ -16,6 +16,7 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
+      SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
       COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
 
     steps:
@@ -28,4 +29,5 @@ jobs:
       - name: Install R dependecies
         run: |
           source("deploy-shinyapps-io.R")
+          deploy(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}

@@ -66,6 +66,5 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
 # }
 #
 
-# install_pkg()
-deploy(account = "jumpingrivers")
-# terminate(account = "nationalarchives")
+# user should call the appropriate functions in GHA recipe
+# eg, deploy(account = my_account)
