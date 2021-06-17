@@ -1,0 +1,36 @@
+on:
+  pull_request:
+    types: [closed]
+
+name: shinyapps-teardown
+
+jobs:
+  shinyapps-deploy:
+    runs-on: ubuntu-18.04
+
+    env:
+      RSPM: https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
+      SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
+      SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
+      COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+
+    steps:
+      - name: Checkout Project
+        uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-r@v1
+        id: install-r
+
+      - name: Install R dependecies
+        run: |
+          source("deploy-shinyapps-io.R")
+          install_deps()
+        shell: Rscript {0}
+
+      - name: Teardown the app for this closed branch
+        run: |
+          source("deploy-shinyapps-io.R")
+          terminate(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
+        shell: Rscript {0}
