@@ -32,6 +32,10 @@ jobs:
           install_deps()
         shell: Rscript {0}
 
+      - name: Put run-required secrets into .Renviron
+        run: |
+          echo "API_KEY=${{ secrets.NOT_MY_API_KEY }}" >> .Renviron
+
       - name: Deploy the app for this branch
         run: |
           source("deploy-shinyapps-io.R")
