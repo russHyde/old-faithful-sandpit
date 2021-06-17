@@ -8,6 +8,14 @@
 #
 
 library(shiny)
+library(magrittr)
+
+get_or_else = function(x, default) {
+  stopifnot(is.character(x))
+  if (x == "") default else x
+}
+
+api_key = Sys.getenv("API_KEY") %>% get_or_else("DEFAULT_VALUE")
 
 # Define UI for application that draws a histogram
 ui = fluidPage(
@@ -23,7 +31,8 @@ ui = fluidPage(
         min = 1,
         max = 50,
         value = 30
-      )
+      ),
+      textOutput("api_key")
     ),
 
     # Show a plot of the generated distribution
@@ -35,6 +44,8 @@ ui = fluidPage(
 
 # Define server logic required to draw a histogram
 server = function(input, output) {
+
+  output$api_key = renderText(paste0("API_KEY: ", api_key))
   output$dist_plot = renderPlot({
     # generate bins based on input$bins from ui.R
     x = faithful[, 2]
