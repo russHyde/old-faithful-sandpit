@@ -68,20 +68,19 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_alert_success("{app_name} successfully deployed")
 }
 
-# Clean up after merging.
-# terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
-#   msg = Sys.getenv("TRAVIS_COMMIT_MESSAGE")
-#   if (stringr::str_detect(msg, "^Merge pull", negate = TRUE)) return(NULL)
-#
-#   cli::cli_h1("Terminating app")
-#   branch = stringr::str_match(msg, "/([^-\\s]*)")[1, 2]
-#   slug = stringr::str_match(Sys.getenv('TRAVIS_REPO_SLUG'), "/(.*)")[1, 2]
-#
-#   appName = paste(slug, branch, sep = '-')
-#   rsconnect::terminateApp(appName = appName, account = account, server = server)
-#   cli::cli_alert_success("{appName} successfully terminated")
-# }
-#
+# Clean up (eg, after merging / closing a branch).
+terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
+  cli::cli_h1("Terminating app")
+
+  app_name = get_app_name()
+
+  rsconnect::terminateApp(
+    appName = app_name,
+    account = account,
+    server = server
+  )
+  cli::cli_alert_success("{app_name} successfully terminated")
+}
 
 # user should call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
