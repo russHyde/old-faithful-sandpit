@@ -29,5 +29,11 @@ jobs:
       - name: Install R dependecies
         run: |
           source("deploy-shinyapps-io.R")
+          install_deps()
+        shell: Rscript {0}
+
+      - name: Deploy the app for this branch
+        run: |
+          source("deploy-shinyapps-io.R")
           deploy(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}

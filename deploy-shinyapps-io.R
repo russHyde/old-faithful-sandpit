@@ -1,8 +1,10 @@
 ## Needs suggests for rsconnect to deploy
-install.packages("rsconnect", dependencies = TRUE)
-if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
-if (!requireNamespace("cli", quietly = TRUE)) install.packages("cli")
-if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+install_deps = function() {
+  install.packages("rsconnect", dependencies = TRUE)
+  if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
+  if (!requireNamespace("cli", quietly = TRUE)) install.packages("cli")
+  if (!requireNamespace("remotes", quietly = TRUE)) install.packages("remotes")
+}
 
 # Needs the following secrets:
 # github.com/username/repo -> Settings -> Secrets
