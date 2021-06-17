@@ -27,6 +27,27 @@ install_deps = function() {
 # }
 #
 
+get_branch_name = function() {
+  branch_name = stringr::str_match(Sys.getenv("GITHUB_REF"), "^refs/heads/(.*)$")[1, 2]
+  branch_name
+}
+
+get_repo_name = function() {
+  repo_name = stringr::str_match(Sys.getenv("GITHUB_REPOSITORY"), ".*/(.*)$")[1, 2]
+  repo_name
+}
+
+get_app_name = function() {
+  branch_name = get_branch_name()
+  repo_name = get_repo_name()
+  app_name = if (branch_name %in% c("master", "main")) {
+    repo_name
+  } else {
+    paste(repo_name, branch_name, sep = "-")
+  }
+  app_name
+}
+
 deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Deploying app")
   rsconnect::setAccountInfo(
@@ -35,13 +56,7 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
     secret = Sys.getenv("SHINYAPPS_IO_SECRET")
   )
 
-  branch_name = stringr::str_match(Sys.getenv("GITHUB_REF"), "^refs/heads/(.*)$")[1, 2]
-  repo_name = stringr::str_match(Sys.getenv("GITHUB_REPOSITORY"), ".*/(.*)$")[1, 2]
-  app_name = if (branch_name %in% c("master", "main")) {
-    repo_name
-  } else {
-    paste(repo_name, branch_name, sep = "-")
-  }
+  app_name = get_app_name()
 
   cli::cli_alert_info("appName: ", app_name)
   rsconnect::deployApp(
