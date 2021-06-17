@@ -19,6 +19,10 @@ The required values are:
   - `SHINYAPPS_IO_TOKEN`
   - `SHINYAPPS_IO_SECRET`
 
+- Secrets that are used during the running of the app (these are put into .Renviron prior to
+  deployment)
+  - `NOT_MY_API_KEY`
+
 To get theshinyapps.io values, go to [https://www.shinyapps.io/admin/#/tokens]() and click "show"
 on your shinyapps.io token.
 A modal will show up that looks like:
