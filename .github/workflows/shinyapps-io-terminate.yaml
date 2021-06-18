@@ -5,7 +5,7 @@ on:
 name: shinyapps-teardown
 
 jobs:
-  shinyapps-deploy:
+  shinyapps-terminate:
     runs-on: ubuntu-18.04
 
     env:
