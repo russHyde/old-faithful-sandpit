@@ -20,7 +20,7 @@ The required values are:
   - `SHINYAPPS_IO_SECRET`
 
 - Secrets that are used during the running of the app (these are put into .Renviron prior to
-  deployment)
+  deployment; note that doing this does not lead the .Renviron file being committed to the repo)
   - `NOT_MY_API_KEY`
 
 To get theshinyapps.io values, go to [https://www.shinyapps.io/admin/#/tokens]() and click "show"
