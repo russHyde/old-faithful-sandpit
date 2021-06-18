@@ -4,7 +4,10 @@ This is a sandpit app, to demonstrate how to add CI/CD using GHA and shinyapps.i
 
 # Deployment to shinyapps-io on push
 
-Workflow `./.github/workflows/shinyapps-io.yaml` is used to deploy to shinyapps.io
+Workflow `./.github/workflows/shinyapps-io-deploy.yaml` is used to deploy to shinyapps.io
+
+Workflow `./.github/workflows/shinyapps-io-terminate.yaml` is used to terminate a
+branch-specific app when the branch is merged into main/master
 
 ## Github secrets
 
