@@ -1,5 +1,13 @@
 on:
+  # Trigger the deployment workflow on push (to main branch) or when a pull request (against the
+  # main branch) is updated
+  #
+  # (If triggered on push in a non-main branch that is a PR against the main branch, then the
+  # workflow would attempt to deploy a branch-specific app to the same shinyapps.io endpoint twice)
   push:
+    branches:
+      - main
+      - master
   pull_request:
     branches:
       - main
