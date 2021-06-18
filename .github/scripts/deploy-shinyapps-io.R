@@ -28,6 +28,22 @@ install_deps = function() {
 #
 
 get_branch_name = function() {
+  # If your branch is called "add-new-thing"
+  # Then,
+  # In an on-PR workflow
+  #  - the GITHUB_REF is "refs/pull/<number>/merge"
+  #  - the GITHUB_HEAD_REF is "add-new-thing"
+  # In an on-push workflow
+  #  - the GITHUB_REF is "refs/head/add-new-thing"
+  #  - and the GITHUB_HEAD_REF is undefined
+
+  # Use the PR head-branch name if event is a PR
+  head_ref = Sys.getenv("GITHUB_HEAD_REF")
+  if (head_ref != "") {
+    return(head_ref)
+  }
+
+  # Use the branch containing the commit if event is a push
   branch_name = stringr::str_match(Sys.getenv("GITHUB_REF"), "^refs/heads/(.*)$")[1, 2]
   branch_name
 }
