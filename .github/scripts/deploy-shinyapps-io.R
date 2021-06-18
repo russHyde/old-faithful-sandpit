@@ -27,6 +27,43 @@ install_deps = function() {
 # }
 #
 
+get_branch_name = function() {
+  # If your branch is called "add-new-thing"
+  # Then,
+  # In an on-PR workflow
+  #  - the GITHUB_REF is "refs/pull/<number>/merge"
+  #  - the GITHUB_HEAD_REF is "add-new-thing"
+  # In an on-push workflow
+  #  - the GITHUB_REF is "refs/head/add-new-thing"
+  #  - and the GITHUB_HEAD_REF is undefined
+
+  # Use the PR head-branch name if event is a PR
+  head_ref = Sys.getenv("GITHUB_HEAD_REF")
+  if (head_ref != "") {
+    return(head_ref)
+  }
+
+  # Use the branch containing the commit if event is a push
+  branch_name = stringr::str_match(Sys.getenv("GITHUB_REF"), "^refs/heads/(.*)$")[1, 2]
+  branch_name
+}
+
+get_repo_name = function() {
+  repo_name = stringr::str_match(Sys.getenv("GITHUB_REPOSITORY"), ".*/(.*)$")[1, 2]
+  repo_name
+}
+
+get_app_name = function() {
+  branch_name = get_branch_name()
+  repo_name = get_repo_name()
+  app_name = if (branch_name %in% c("master", "main")) {
+    repo_name
+  } else {
+    paste(repo_name, branch_name, sep = "-")
+  }
+  app_name
+}
+
 deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Deploying app")
   rsconnect::setAccountInfo(
@@ -35,13 +72,7 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
     secret = Sys.getenv("SHINYAPPS_IO_SECRET")
   )
 
-  branch_name = stringr::str_match(Sys.getenv("GITHUB_REF"), "^refs/heads/(.*)$")[1, 2]
-  repo_name = stringr::str_match(Sys.getenv("GITHUB_REPOSITORY"), ".*/(.*)$")[1, 2]
-  app_name = if (branch_name %in% c("master", "main")) {
-    repo_name
-  } else {
-    paste(repo_name, branch_name, sep = "-")
-  }
+  app_name = get_app_name()
 
   cli::cli_alert_info("appName: ", app_name)
   rsconnect::deployApp(
@@ -53,20 +84,24 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_alert_success("{app_name} successfully deployed")
 }
 
-# Clean up after merging.
-# terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
-#   msg = Sys.getenv("TRAVIS_COMMIT_MESSAGE")
-#   if (stringr::str_detect(msg, "^Merge pull", negate = TRUE)) return(NULL)
-#
-#   cli::cli_h1("Terminating app")
-#   branch = stringr::str_match(msg, "/([^-\\s]*)")[1, 2]
-#   slug = stringr::str_match(Sys.getenv('TRAVIS_REPO_SLUG'), "/(.*)")[1, 2]
-#
-#   appName = paste(slug, branch, sep = '-')
-#   rsconnect::terminateApp(appName = appName, account = account, server = server)
-#   cli::cli_alert_success("{appName} successfully terminated")
-# }
-#
+# Clean up (eg, after merging / closing a branch).
+terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
+  cli::cli_h1("Terminating app")
+  rsconnect::setAccountInfo(
+    name = account,
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
+
+  app_name = get_app_name()
+
+  rsconnect::terminateApp(
+    appName = app_name,
+    account = account,
+    server = server
+  )
+  cli::cli_alert_success("{app_name} successfully terminated")
+}
 
 # user should call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
