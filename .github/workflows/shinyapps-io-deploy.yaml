@@ -41,12 +41,14 @@ jobs:
 
       - name: Install R deployment dependencies
         run: |
+          options(warn = 2)
           source("${{ env.SCRIPT }}")
           install_deps()
         shell: Rscript {0}
 
       - name: Install R runtime dependencies
         run: |
+          options(warn = 2)
           install.packages('remotes')
           remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
@@ -57,6 +59,7 @@ jobs:
 
       - name: Deploy the app for this branch
         run: |
+          options(warn = 2)
           source("${{ env.SCRIPT }}")
           deploy(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}
