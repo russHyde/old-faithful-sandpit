@@ -21,17 +21,24 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v2
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+
       - uses: r-lib/actions/setup-r@v1
         id: install-r
 
-      - name: Install R dependecies
+      - name: Install app-termination R dependencies
         run: |
+          options(warn = 2)
           source("${{ env.SCRIPT }}")
           install_deps()
         shell: Rscript {0}
 
       - name: Teardown the app for this closed branch
         run: |
+          options(warn = 2)
           source("${{ env.SCRIPT }}")
           terminate(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}
