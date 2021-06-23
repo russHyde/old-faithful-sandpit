@@ -47,7 +47,7 @@ jobs:
         run: |
           options(warn = 2)
           source("${{ env.SCRIPT }}")
-          install_deps()
+          install_script_deps()
         shell: Rscript {0}
 
       - name: Install R runtime dependencies
