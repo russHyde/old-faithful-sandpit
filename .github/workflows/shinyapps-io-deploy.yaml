@@ -17,10 +17,10 @@ name: shinyapps-deploy
 
 jobs:
   shinyapps-deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     env:
-      RSPM: https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+      RSPM: https://packagemanager.rstudio.com/cran/__linux__/focal/latest
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
@@ -47,7 +47,7 @@ jobs:
         run: |
           options(warn = 2)
           source("${{ env.SCRIPT }}")
-          install_deps()
+          install_script_deps()
         shell: Rscript {0}
 
       - name: Install R runtime dependencies

@@ -6,10 +6,10 @@ name: shinyapps-teardown
 
 jobs:
   shinyapps-terminate:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     env:
-      RSPM: https://packagemanager.rstudio.com/cran/__linux__/bionic/latest
+      RSPM: https://packagemanager.rstudio.com/cran/__linux__/focal/latest
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
@@ -21,17 +21,24 @@ jobs:
       - name: Checkout Project
         uses: actions/checkout@v2
 
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev
+
       - uses: r-lib/actions/setup-r@v1
         id: install-r
 
-      - name: Install R dependecies
+      - name: Install app-termination R dependencies
         run: |
+          options(warn = 2)
           source("${{ env.SCRIPT }}")
-          install_deps()
+          install_script_deps()
         shell: Rscript {0}
 
       - name: Teardown the app for this closed branch
         run: |
+          options(warn = 2)
           source("${{ env.SCRIPT }}")
           terminate(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
         shell: Rscript {0}

@@ -1,5 +1,5 @@
 ## Needs suggests for rsconnect to deploy
-install_deps = function() {
+install_script_deps = function() {
   install.packages("rsconnect", dependencies = TRUE)
   if (!requireNamespace("stringr", quietly = TRUE)) install.packages("stringr")
   if (!requireNamespace("cli", quietly = TRUE)) install.packages("cli")
