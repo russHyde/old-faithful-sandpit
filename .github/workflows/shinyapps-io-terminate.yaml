@@ -11,6 +11,7 @@ jobs:
     env:
       RSPM: https://packagemanager.rstudio.com/cran/__linux__/focal/latest
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      APP_BASENAME: my-app
       SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
       SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
