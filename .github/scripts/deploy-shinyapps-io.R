@@ -64,13 +64,12 @@ get_app_name = function() {
   app_name
 }
 
+###################################################################################################
+
+# Functions for calling by the user
+
 deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Deploying app")
-  rsconnect::setAccountInfo(
-    name = account,
-    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-  )
 
   app_name = get_app_name()
 
@@ -89,11 +88,6 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
 # Clean up (eg, after merging / closing a branch).
 terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Terminating app")
-  rsconnect::setAccountInfo(
-    name = account,
-    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-  )
 
   app_name = get_app_name()
 
@@ -106,12 +100,6 @@ terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
 }
 
 configure = function(account = "jumpingrivers", server = "shinyapps.io", size = "large") {
-  rsconnect::setAccountInfo(
-    name = account,
-    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-  )
-
   app_name = get_app_name()
 
   rsconnect::configureApp(
@@ -122,6 +110,16 @@ configure = function(account = "jumpingrivers", server = "shinyapps.io", size = 
   )
   cli::cli_alert_success("{app_name} successfully configured")
 }
+
+###################################################################################################
+
+# Set up context for the user to call the deployment / configuration / termination functions
+
+rsconnect::setAccountInfo(
+  name = Sys.getenv("SHINYAPPS_IO_ACCOUNT", "jumpingrivers"),
+  token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+  secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+)
 
 # user should call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
