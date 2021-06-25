@@ -55,14 +55,14 @@ get_repo_name = function() {
 
 get_app_name = function(include_branch) {
   app_basename = Sys.getenv("APP_BASENAME", get_repo_name())
-  app_suffix = if (include_branch) {
-    paste0("-", get_branch_name())
-  } else {
-    ""
+  if (!include_branch) {
+    return(app_basename)
   }
+
   app_name = if (branch_name %in% c("master", "main")) {
     app_basename
   } else {
+    app_suffix = paste0("-", get_branch_name())
     paste0(app_basename, app_suffix)
   }
   app_name
