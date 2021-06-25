@@ -55,11 +55,11 @@ get_repo_name = function() {
 
 get_app_name = function() {
   branch_name = get_branch_name()
-  repo_name = get_repo_name()
+  app_basename = get_repo_name()
   app_name = if (branch_name %in% c("master", "main")) {
-    repo_name
+    app_basename
   } else {
-    paste(repo_name, branch_name, sep = "-")
+    paste(app_basename, branch_name, sep = "-")
   }
   app_name
 }
