@@ -59,7 +59,7 @@ get_app_name = function(include_branch) {
     return(app_basename)
   }
 
-  app_name = if (branch_name %in% c("master", "main")) {
+  app_name = if (get_branch_name() %in% c("master", "main")) {
     app_basename
   } else {
     app_suffix = paste0("-", get_branch_name())
