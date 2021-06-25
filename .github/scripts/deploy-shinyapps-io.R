@@ -53,13 +53,17 @@ get_repo_name = function() {
   repo_name
 }
 
-get_app_name = function() {
-  branch_name = get_branch_name()
+get_app_name = function(include_branch) {
   app_basename = Sys.getenv("APP_BASENAME", get_repo_name())
+  app_suffix = if (include_branch) {
+    paste0("-", get_branch_name())
+  } else {
+    ""
+  }
   app_name = if (branch_name %in% c("master", "main")) {
     app_basename
   } else {
-    paste(app_basename, branch_name, sep = "-")
+    paste0(app_basename, app_suffix)
   }
   app_name
 }
@@ -68,10 +72,14 @@ get_app_name = function() {
 
 # Functions for calling by the user
 
-deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
+deploy = function(
+    account = "jumpingrivers",
+    server = "shinyapps.io",
+    include_branch = TRUE
+) {
   cli::cli_h1("Deploying app")
 
-  app_name = get_app_name()
+  app_name = get_app_name(include_branch = include_branch)
 
   cli::cli_alert_info("appName: ", app_name)
 
@@ -86,10 +94,14 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
 }
 
 # Clean up (eg, after merging / closing a branch).
-terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
+terminate = function(
+    account = "jumpingrivers",
+    server = "shinyapps.io",
+    include_branch = TRUE
+) {
   cli::cli_h1("Terminating app")
 
-  app_name = get_app_name()
+  app_name = get_app_name(include_branch = include_branch)
 
   rsconnect::terminateApp(
     account = account,
@@ -99,8 +111,13 @@ terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_alert_success("{app_name} successfully terminated")
 }
 
-configure = function(account = "jumpingrivers", server = "shinyapps.io", size = "large") {
-  app_name = get_app_name()
+configure = function(
+    account = "jumpingrivers",
+    server = "shinyapps.io",
+    size = "large",
+    include_branch = TRUE
+) {
+  app_name = get_app_name(include_branch = include_branch)
 
   rsconnect::configureApp(
     account = account,

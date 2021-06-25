@@ -12,6 +12,7 @@ jobs:
       RSPM: https://packagemanager.rstudio.com/cran/__linux__/focal/latest
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       APP_BASENAME: my-app
+      APP_INCLUDE_BRANCHNAME: FALSE
       SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
       SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
@@ -55,5 +56,8 @@ jobs:
         run: |
           options(warn = 2)
           source("${{ env.SCRIPT }}")
-          terminate(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
+          terminate(
+            account = "${{ env.SHINYAPPS_IO_ACCOUNT }}",
+            include_branch = ${{ env.APP_INCLUDE_BRANCHNAME }}
+          )
         shell: Rscript {0}
