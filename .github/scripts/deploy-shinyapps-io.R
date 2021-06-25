@@ -64,44 +64,67 @@ get_app_name = function() {
   app_name
 }
 
+###################################################################################################
+
+# Functions for calling by the user
+
 deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Deploying app")
-  rsconnect::setAccountInfo(
-    name = account,
-    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-  )
 
   app_name = get_app_name()
 
   cli::cli_alert_info("appName: ", app_name)
+
   rsconnect::deployApp(
     account = account,
     server = server,
-    appDir = ".",
-    appName = app_name
+    appName = app_name,
+    appDir = "."
   )
+
   cli::cli_alert_success("{app_name} successfully deployed")
 }
 
 # Clean up (eg, after merging / closing a branch).
 terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_h1("Terminating app")
-  rsconnect::setAccountInfo(
-    name = account,
-    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-  )
 
   app_name = get_app_name()
 
   rsconnect::terminateApp(
-    appName = app_name,
     account = account,
-    server = server
+    server = server,
+    appName = app_name
   )
   cli::cli_alert_success("{app_name} successfully terminated")
 }
 
-# user should call the appropriate functions in GHA recipe
+configure = function(account = "jumpingrivers", server = "shinyapps.io", size = "large") {
+  app_name = get_app_name()
+
+  rsconnect::configureApp(
+    account = account,
+    server = server,
+    appName = app_name,
+    size = size
+  )
+  cli::cli_alert_success("{app_name} successfully configured")
+}
+
+###################################################################################################
+
+# Set up context for the user to call the deployment / configuration / termination functions
+
+if (requireNamespace("rsconnect")) {
+  rsconnect::setAccountInfo(
+    name = Sys.getenv("SHINYAPPS_IO_ACCOUNT", "jumpingrivers"),
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
+}
+
+# User should `source()` this script, then call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
+#
+# Make sure you've called `install_script_deps()`, or the dependencies for the functions won't be
+# available

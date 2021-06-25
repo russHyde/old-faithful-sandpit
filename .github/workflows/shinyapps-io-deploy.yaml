@@ -26,6 +26,7 @@ jobs:
       SHINYAPPS_IO_TOKEN: ${{ secrets.SHINYAPPS_IO_TOKEN }}
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
       SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
+      SHINYAPPS_IO_INSTANCE_SIZE: small
       COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
       SCRIPT: ".github/scripts/deploy-shinyapps-io.R"
 
@@ -81,4 +82,14 @@ jobs:
           options(warn = 2)
           source("${{ env.SCRIPT }}")
           deploy(account = "${{ env.SHINYAPPS_IO_ACCOUNT }}")
+        shell: Rscript {0}
+
+      - name: Configure the runtime instance
+        run: |
+          options(warn = 2)
+          source("${{ env.SCRIPT }}")
+          configure(
+            account = "${{ env.SHINYAPPS_IO_ACCOUNT }}",
+            size = "${{ env.SHINYAPPS_IO_INSTANCE_SIZE }}"
+          )
         shell: Rscript {0}
