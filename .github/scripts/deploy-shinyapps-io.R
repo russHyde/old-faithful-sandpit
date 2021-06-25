@@ -55,7 +55,7 @@ get_repo_name = function() {
 
 get_app_name = function() {
   branch_name = get_branch_name()
-  app_basename = get_repo_name()
+  app_basename = Sys.getenv("APP_BASENAME", get_repo_name())
   app_name = if (branch_name %in% c("master", "main")) {
     app_basename
   } else {
