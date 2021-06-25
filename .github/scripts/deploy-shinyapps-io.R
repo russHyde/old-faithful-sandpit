@@ -105,5 +105,23 @@ terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
   cli::cli_alert_success("{app_name} successfully terminated")
 }
 
+configure = function(account = "jumpingrivers", server = "shinyapps.io", size = "large") {
+  rsconnect::setAccountInfo(
+    name = account,
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
+
+  app_name = get_app_name()
+
+  rsconnect::configureApp(
+    account = account,
+    server = server,
+    appName = app_name,
+    size = size
+  )
+  cli::cli_alert_success("{app_name} successfully configured")
+}
+
 # user should call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
