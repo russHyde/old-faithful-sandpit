@@ -94,7 +94,7 @@ jobs:
           source("${{ env.SCRIPT }}")
           configure(
             account = "${{ env.SHINYAPPS_IO_ACCOUNT }}",
-            include_branch = ${{ env.APP_INCLUDE_BRANCH_SUFFIX }}
+            include_branch = ${{ env.APP_INCLUDE_BRANCH_SUFFIX }},
             size = "${{ env.SHINYAPPS_IO_INSTANCE_SIZE }}"
           )
         shell: Rscript {0}
