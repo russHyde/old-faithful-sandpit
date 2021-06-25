@@ -75,12 +75,14 @@ deploy = function(account = "jumpingrivers", server = "shinyapps.io") {
   app_name = get_app_name()
 
   cli::cli_alert_info("appName: ", app_name)
+
   rsconnect::deployApp(
     account = account,
     server = server,
-    appDir = ".",
-    appName = app_name
+    appName = app_name,
+    appDir = "."
   )
+
   cli::cli_alert_success("{app_name} successfully deployed")
 }
 
@@ -96,9 +98,9 @@ terminate = function(account = "jumpingrivers", server = "shinyapps.io") {
   app_name = get_app_name()
 
   rsconnect::terminateApp(
-    appName = app_name,
     account = account,
-    server = server
+    server = server,
+    appName = app_name
   )
   cli::cli_alert_success("{app_name} successfully terminated")
 }
