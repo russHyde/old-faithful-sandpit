@@ -115,11 +115,16 @@ configure = function(account = "jumpingrivers", server = "shinyapps.io", size = 
 
 # Set up context for the user to call the deployment / configuration / termination functions
 
-rsconnect::setAccountInfo(
-  name = Sys.getenv("SHINYAPPS_IO_ACCOUNT", "jumpingrivers"),
-  token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-  secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-)
+if (requireNamespace("rsconnect")) {
+  rsconnect::setAccountInfo(
+    name = Sys.getenv("SHINYAPPS_IO_ACCOUNT", "jumpingrivers"),
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
+}
 
-# user should call the appropriate functions in GHA recipe
+# User should `source()` this script, then call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
+#
+# Make sure you've called `install_script_deps()`, or the dependencies for the functions won't be
+# available
