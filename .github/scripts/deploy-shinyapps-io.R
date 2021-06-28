@@ -53,7 +53,7 @@ get_repo_name = function() {
   repo_name
 }
 
-get_app_name = function(include_branch) {
+get_app_name = function(include_branch = TRUE) {
   app_basename = Sys.getenv("APP_BASENAME", get_repo_name())
   if (!include_branch) {
     return(app_basename)
