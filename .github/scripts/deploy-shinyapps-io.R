@@ -100,7 +100,7 @@ setup_and_run = function(f, ..., include_branch = TRUE, completion_string = "") 
 
   f(appName = app_name, ...)
 
-  cli::cli_alert_info(paste0(app_name, ": ", completion_string))
+  cli::cli_alert_success(paste0(app_name, ": ", completion_string))
 }
 
 ###################################################################################################
