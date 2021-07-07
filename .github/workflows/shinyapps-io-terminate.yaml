@@ -17,7 +17,7 @@ jobs:
       SHINYAPPS_IO_SECRET: ${{ secrets.SHINYAPPS_IO_SECRET }}
       SHINYAPPS_IO_ACCOUNT: ${{ secrets.SHINYAPPS_IO_ACCOUNT }}
       COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
-      SCRIPT: ".github/scripts/deploy-shinyapps-io.R"
+      SCRIPT: ".github/workflows/shinyapps-io.R"
 
     steps:
       - name: Checkout Project
