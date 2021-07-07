@@ -53,7 +53,7 @@ get_repo_name = function() {
   repo_name
 }
 
-get_app_name = function(include_branch) {
+get_app_name = function(include_branch = TRUE) {
   app_basename = Sys.getenv("APP_BASENAME", get_repo_name())
   if (!include_branch) {
     return(app_basename)
@@ -68,6 +68,41 @@ get_app_name = function(include_branch) {
   app_name
 }
 
+
+#' Set up context within which to deploy / configure / terminate an app
+#'
+#' The ENV variables "SHINYAPPS_IO_ACCOUNT", "SHINYAPPS_IO_TOKEN", "SHINYAPPS_IO_SECRET" should
+#' all be available
+setup = function() {
+  rsconnect::setAccountInfo(
+    name = Sys.getenv("SHINYAPPS_IO_ACCOUNT", "jumpingrivers"),
+    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
+    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
+  )
+}
+
+#' To deploy, configure or terminate an app at shinyapps.io, you first need to add a user account
+#' to the local machine. Here we add the user account (based on env variables
+#' SHINYAPPS_IO_[ACCOUNT|TOKEN|SECRET] then run one of the rsconnect functions).
+#'
+#' @param   f   An rsconnect function, typically deployApp, terminateApp, configureApp.
+#' @param   ...   Arguments for the rsconnect function (except AppName, which we determine based on
+#' ENV variable APP_BASENAME and the current branch)
+#' @param   include_branch   Should the branch name be appended to the name of the app during
+#' deployment?
+#' @param   completion_string   A message to be printed when the function completes
+#' "<app_name>: <completion_string>".
+#' @return   NULL
+
+setup_and_run = function(f, ..., include_branch = TRUE, completion_string = "") {
+  setup()
+  app_name = get_app_name(include_branch = include_branch)
+
+  f(appName = app_name, ...)
+
+  cli::cli_alert_success(paste0(app_name, ": ", completion_string))
+}
+
 ###################################################################################################
 
 # Functions for calling by the user
@@ -75,22 +110,19 @@ get_app_name = function(include_branch) {
 deploy = function(
     account = "jumpingrivers",
     server = "shinyapps.io",
-    include_branch = TRUE
+    include_branch = TRUE,
+    ...
 ) {
   cli::cli_h1("Deploying app")
 
-  app_name = get_app_name(include_branch = include_branch)
-
-  cli::cli_alert_info("appName: ", app_name)
-
-  rsconnect::deployApp(
+  setup_and_run(
+    rsconnect::deployApp,
     account = account,
     server = server,
-    appName = app_name,
-    appDir = "."
+    ...,
+    include_branch = include_branch,
+    completion_string = "successfully deployed"
   )
-
-  cli::cli_alert_success("{app_name} successfully deployed")
 }
 
 # Clean up (eg, after merging / closing a branch).
@@ -101,14 +133,13 @@ terminate = function(
 ) {
   cli::cli_h1("Terminating app")
 
-  app_name = get_app_name(include_branch = include_branch)
-
-  rsconnect::terminateApp(
+  setup_and_run(
+    rsconnect::terminateApp,
     account = account,
     server = server,
-    appName = app_name
+    include_branch = include_branch,
+    completion_string = "successfully terminated"
   )
-  cli::cli_alert_success("{app_name} successfully terminated")
 }
 
 configure = function(
@@ -117,28 +148,17 @@ configure = function(
     size = "large",
     include_branch = TRUE
 ) {
-  app_name = get_app_name(include_branch = include_branch)
-
-  rsconnect::configureApp(
+  setup_and_run(
+    rsconnect::configureApp,
     account = account,
     server = server,
-    appName = app_name,
-    size = size
+    size = size,
+    include_branch = include_branch,
+    completion_string = "successfully configured"
   )
-  cli::cli_alert_success("{app_name} successfully configured")
 }
 
 ###################################################################################################
-
-# Set up context for the user to call the deployment / configuration / termination functions
-
-if (requireNamespace("rsconnect")) {
-  rsconnect::setAccountInfo(
-    name = Sys.getenv("SHINYAPPS_IO_ACCOUNT", "jumpingrivers"),
-    token = Sys.getenv("SHINYAPPS_IO_TOKEN"),
-    secret = Sys.getenv("SHINYAPPS_IO_SECRET")
-  )
-}
 
 # User should `source()` this script, then call the appropriate functions in GHA recipe
 # eg, deploy(account = my_account)
