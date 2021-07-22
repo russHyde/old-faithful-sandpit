@@ -22,6 +22,9 @@ The required values are:
   - `SHINYAPPS_IO_TOKEN`
   - `SHINYAPPS_IO_SECRET`
 
+- Secrets regarding your github account
+  - `GITHUB_TOKEN`
+
 - Secrets that are used during the running of the app (these are put into .Renviron prior to
   deployment; note that doing this does not lead the .Renviron file being committed to the repo)
   - `NOT_MY_API_KEY`
