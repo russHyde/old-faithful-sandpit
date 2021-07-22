@@ -22,7 +22,8 @@ The required values are:
   - `SHINYAPPS_IO_TOKEN`
   - `SHINYAPPS_IO_SECRET`
 
-- Secrets regarding your github account
+- Secrets regarding your github account (these are auto-added by github, you don't need to add
+- them)
   - `GITHUB_TOKEN`
 
 - Secrets that are used during the running of the app (these are put into .Renviron prior to
