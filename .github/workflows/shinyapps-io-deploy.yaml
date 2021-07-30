@@ -60,18 +60,25 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
+      - name: Install R runtime dependencies
+        run: |
+          options(warn = 2)
+          # use 'renv' if available, otherwise use 'DESCRIPTION'
+          if (file.exists("renv.lock")) {
+            install.packages("renv")
+            renv::consent(TRUE)
+            renv::restore()
+          } else {
+            install.packages("remotes")
+            remotes::install_deps(dependencies = TRUE)
+          }
+        shell: Rscript {0}
+
       - name: Install R deployment dependencies
         run: |
           options(warn = 2)
           source("${{ env.SCRIPT }}")
           install_script_deps()
-        shell: Rscript {0}
-
-      - name: Install R runtime dependencies
-        run: |
-          options(warn = 2)
-          install.packages('remotes')
-          remotes::install_deps(dependencies = TRUE)
         shell: Rscript {0}
 
       - name: Put run-required secrets into .Renviron
