@@ -35,9 +35,11 @@ jobs:
           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
 
       - name: Install lintr
-        run: install.packages("lintr")
+        run: remotes::install_github("jimhester/lintr")
         shell: Rscript {0}
 
       - name: Lint root directory
-        run: "options(lintr.error_on_lint = TRUE); lintr::lint_dir()"
+        run: |
+          options(lintr.error_on_lint = TRUE)
+          lintr::lint_dir(exclusions = "renv")
         shell: Rscript {0}
